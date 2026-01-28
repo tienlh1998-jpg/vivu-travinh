@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViVuTraVinh - Khám Phá & Trải Nghiệm (Mới)</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=20260128">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css?v=20260128" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js?v=20260128"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316', // Orange-500
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #f97316;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hide scrollbar for gallery */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300 glass-panel shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" onclick="resetToHome()" class="flex items-center gap-2 group">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-brand-400 to-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:shadow-glow transition-all duration-300">
+                    <i class="fa-solid fa-location-dot text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-slate-900 leading-none">ViVu<span
+                            class="text-brand-600">TraVinh</span></span>
+                    <span class="text-[10px] font-medium text-slate-500 uppercase tracking-widest">Khám phá & Chia
+                        sẻ</span>
+                </div>
+            </a>
+
+            <a href="https://forms.gle/8Jw9BvgJEXn7AiWr5" target="_blank"
+                class="bg-slate-900 hover:bg-brand-600 text-white font-medium py-2.5 px-5 rounded-xl shadow-lg transition-all flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span class="hidden sm:inline">Đóng góp địa điểm</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-24 pb-10 px-0 md:px-4">
+        <div class="container mx-auto max-w-6xl relative z-10">
+            
+            <!-- SWIPER SLIDER -->
+            <div class="swiper heroSwiper rounded-none md:rounded-3xl shadow-xl overflow-hidden mb-8 h-[400px] md:h-[500px] relative">
+                <div class="swiper-wrapper">
+                    <!-- Slide 1: Ao Bà Om -->
+                    <div class="swiper-slide relative">
+                        <img src="./aobaom-8-1024x588.jpg" 
+                             class="w-full h-full object-cover" 
+                             alt="Ao Bà Om"
+                             onerror="this.src='https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2070&auto=format&fit=crop'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-white">
+                            <span class="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-2 uppercase tracking-wider font-sans">Điểm đến biểu tượng</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 leading-tight font-serif">Ao Bà Om - Hàng cây trăm tuổi</h2>
+                            <p class="text-slate-200 max-w-2xl line-clamp-2 font-medium">Di tích thắng cảnh cấp quốc gia với không khí trong lành, mát mẻ quanh năm.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Biển Ba Động -->
+                    <div class="swiper-slide relative">
+                        <img src="./Thoi-gian-dep-de-di-du-lich-bien-ba-dong.webp" 
+                             class="w-full h-full object-cover" 
+                             alt="Biển Ba Động"
+                             onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-white">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-2 uppercase tracking-wider font-sans">Du lịch biển</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 leading-tight font-serif">Biển Ba Động - Vẻ đẹp nguyên sơ</h2>
+                            <p class="text-slate-200 max-w-2xl line-clamp-2 font-medium">Thỏa sức check-in với những tua bin gió khổng lồ và bãi biển dài thơ mộng.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Ẩm thực -->
+                    <div class="swiper-slide relative">
+                        <img src="./bun-nuoc-leo-tra-vinh-1-1739012793.jpeg" 
+                             class="w-full h-full object-cover" 
+                             alt="Bún nước lèo"
+                             onerror="this.src='https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1974&auto=format&fit=crop'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-white">
+                            <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-2 uppercase tracking-wider font-sans">Đặc sản phải thử</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 leading-tight font-serif">Bún Nước Lèo trứ danh</h2>
+                            <p class="text-slate-200 max-w-2xl line-clamp-2 font-medium">Hương vị đậm đà khó quên của món ăn đặc sản nổi tiếng nhất Trà Vinh.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Swiper Navigation -->
+                <div class="swiper-button-next text-white hover:text-brand-500 transition-colors"></div>
+                <div class="swiper-button-prev text-white hover:text-brand-500 transition-colors"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+
+            <!-- SEARCH & FILTER BAR -->
+            <div
+                class="bg-white p-3 rounded-2xl shadow-lg border border-slate-100 max-w-4xl mx-auto flex flex-col md:flex-row gap-2">
+                <div class="flex-grow relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="Tìm quán ăn, cafe, địa điểm..."
+                        class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-slate-800 font-medium">
+                </div>
+
+                <div class="flex gap-2 w-full md:w-auto">
+                    <div class="relative w-1/2 md:w-48">
+                        <select id="categoryFilter"
+                            class="w-full pl-4 pr-10 py-3.5 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-slate-700 font-medium appearance-none cursor-pointer hover:bg-slate-100">
+                            <option value="">Tất cả loại</option>
+                        </select>
+                        <i
+                            class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                    </div>
+
+                    <div class="relative w-1/2 md:w-48">
+                        <select id="areaFilter"
+                            class="w-full pl-4 pr-10 py-3.5 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-100 focus:border-brand-500 transition-all text-slate-700 font-medium appearance-none cursor-pointer hover:bg-slate-100">
+                            <option value="">Tất cả khu vực</option>
+                        </select>
+                        <i
+                            class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow container mx-auto px-4 pb-20">
+
+        <!-- Loading State -->
+        <div id="loadingState" class="flex flex-col items-center justify-center py-32">
+            <div class="loader mb-6 border-slate-200 border-b-brand-500"></div>
+            <p class="text-slate-500 font-medium animate-pulse">Đang tải dữ liệu trải nghiệm...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState"
+            class="hidden flex flex-col items-center justify-center py-20 text-center bg-red-50 rounded-3xl border border-red-100">
+            <div class="bg-red-100 p-5 rounded-full mb-4 text-red-500">
+                <i class="fa-solid fa-server text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Oops! Có lỗi xảy ra</h3>
+            <p class="text-slate-500 max-w-md mb-6" id="errorMessage">Không thể kết nối đến máy chủ dữ liệu.</p>
+            <button onclick="location.reload()"
+                class="bg-white border border-slate-200 hover:border-brand-500 text-slate-700 hover:text-brand-600 font-semibold py-2 px-6 rounded-lg transition-all shadow-sm">
+                Thử lại ngay
+            </button>
+        </div>
+
+        <!-- HOME VIEW (SECTIONS) -->
+        <div id="homeView" class="hidden space-y-16">
+            <!-- Section 1: Ăn Uống -->
+            <section id="section-food">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-orange-100 text-orange-600 p-2 rounded-lg text-xl"><i
+                                class="fa-solid fa-utensils"></i></span>
+                        😋 Ăn Uống No Say
+                    </h2>
+                    <button onclick="showFullList('food')"
+                        class="text-brand-600 font-bold hover:text-brand-700 flex items-center gap-1 transition-colors">
+                        Xem tất cả <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-food"></div>
+            </section>
+
+            <!-- Section 2: Cafe -->
+            <section id="section-cafe">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-brown-100 text-amber-700 p-2 rounded-lg text-xl"><i
+                                class="fa-solid fa-mug-hot"></i></span>
+                        ☕ Cà Phê & Tám Chuyện
+                    </h2>
+                    <button onclick="showFullList('cafe')"
+                        class="text-brand-600 font-bold hover:text-brand-700 flex items-center gap-1 transition-colors">
+                        Xem tất cả <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-cafe"></div>
+            </section>
+
+            <!-- Section 3: Du Lịch -->
+            <section id="section-travel">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-blue-100 text-blue-600 p-2 rounded-lg text-xl"><i
+                                class="fa-solid fa-camera"></i></span>
+                        📸 Vi Vu Du Lịch
+                    </h2>
+                    <button onclick="showFullList('travel')"
+                        class="text-brand-600 font-bold hover:text-brand-700 flex items-center gap-1 transition-colors">
+                        Xem tất cả <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-travel"></div>
+            </section>
+
+            <!-- Section 4: Dịch Vụ -->
+            <section id="section-service">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg text-xl"><i
+                                class="fa-solid fa-bell-concierge"></i></span>
+                        🛠️ Dịch Vụ Tiện Ích
+                    </h2>
+                    <button onclick="showFullList('service')"
+                        class="text-brand-600 font-bold hover:text-brand-700 flex items-center gap-1 transition-colors">
+                        Xem tất cả <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-service"></div>
+            </section>
+        </div>
+
+        <!-- SEARCH/LIST VIEW -->
+        <div id="listView" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="listViewTitle" class="text-2xl font-bold text-slate-800">Kết quả tìm kiếm</h2>
+                <button onclick="resetToHome()"
+                    class="text-slate-500 hover:text-brand-600 font-medium flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
+                </button>
+            </div>
+
+            <div id="listGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Items injected here -->
+            </div>
+
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="bg-slate-100 p-6 rounded-full mb-4">
+                    <i class="fa-regular fa-face-sad-tear text-slate-400 text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Không tìm thấy kết quả</h3>
+                <p class="text-slate-500">Thử thay đổi từ khóa hoặc bộ lọc xem sao nhé!</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 pt-10 pb-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <a href="#" class="text-2xl font-bold tracking-tight text-slate-900">ViVu<span
+                    class="text-brand-600">TraVinh</span></a>
+            <p class="text-slate-500 mt-2 text-sm">Nền tảng chia sẻ địa điểm ăn uống, du lịch miễn phí cho cộng đồng.
+            </p>
+            <div class="mt-6 text-slate-400 text-xs">
+                &copy; 2026 ViVuTraVinh. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- DETAIL MODAL -->
+    <div id="detailModal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl w-full border border-white/20">
+                    <button onclick="closeModal()"
+                        class="absolute top-4 right-4 z-20 bg-black/20 hover:bg-black/40 text-white p-2 rounded-full backdrop-blur-md transition-all">
+                        <i class="fa-solid fa-xmark text-xl w-8 h-8 flex items-center justify-center"></i>
+                    </button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        <div class="relative bg-slate-200 flex flex-col h-64 md:h-auto">
+                            <div class="flex-grow w-full relative overflow-hidden group">
+                                <img id="modalImage" src="" alt="Location"
+                                    class="w-full h-full object-cover transition-all duration-500"
+                                    onerror="this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=ViVuTraVinh'">
+                            </div>
+                            <!-- Gallery Thumbnails -->
+                            <div id="modalGallery"
+                                class="flex gap-2 p-3 overflow-x-auto bg-white border-t border-slate-100 hidden scrollbar-hide">
+                                <!-- Thumbnails injected here -->
+                            </div>
+                        </div>
+                        <div class="p-8 flex flex-col h-full bg-white">
+                            <div class="mb-auto">
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span id="modalCategory"
+                                        class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full uppercase tracking-wider">Category</span>
+                                    <span id="modalArea"
+                                        class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full uppercase tracking-wider">Area</span>
+                                </div>
+                                <h2 id="modalTitle" class="text-3xl font-bold text-slate-900 mb-2 leading-tight">
+                                    Location Name</h2>
+                                <div class="flex items-center gap-2 mb-4 text-yellow-500 text-sm" id="modalStars"></div>
+
+                                <div class="flex items-center gap-4 mb-6 text-sm">
+                                    <div
+                                        class="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-2 py-1 rounded-lg">
+                                        <i class="fa-solid fa-money-bill-wave"></i> <span id="modalPrice">$$$</span>
+                                    </div>
+                                    <div class="flex items-center gap-1 text-slate-500">
+                                        <i class="fa-regular fa-clock"></i> <span id="modalTime">Time</span>
+                                    </div>
+                                </div>
+
+                                <div class="prose prose-slate prose-sm mb-6">
+                                    <h3 class="text-sm font-bold text-slate-900 uppercase mb-2">Mô tả chi tiết</h3>
+                                    <p id="modalDescription" class="text-slate-600 leading-relaxed">Description...</p>
+                                </div>
+                            </div>
+                            <div class="mt-6 pt-6 border-t border-slate-100 flex gap-3">
+                                <button onclick="closeModal()"
+                                    class="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors">Đóng</button>
+                                <a id="modalMapLink" href="#" target="_blank"
+                                    class="flex-[2] py-3 px-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-brand-600 shadow-lg transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-location-arrow"></i> Chỉ đường
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // CONFIG
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShzpU4sQYUzYJV1TNGbH5O3Ucnczdd1tspWVd3uhsoNO29t6ozYDCNn2J79dMQoYg3B7HktdqUNjTk/pub?output=csv';
+        const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+
+        // STATE
+        let allLocations = [];
+        let favorites = JSON.parse(localStorage.getItem('vivu_favorites')) || [];
+
+        // DOM ELEMENTS
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const homeView = document.getElementById('homeView');
+        const listView = document.getElementById('listView');
+        const listGrid = document.getElementById('listGrid');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const areaFilter = document.getElementById('areaFilter');
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+
+            searchInput.addEventListener('input', handleSearch);
+            categoryFilter.addEventListener('change', handleSearch);
+            areaFilter.addEventListener('change', handleSearch);
+
+            // Init Swiper
+            const swiper = new Swiper(".heroSwiper", {
+                spaceBetween: 0,
+                centeredSlides: true,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                effect: "fade",
+                fadeEffect: {
+                    crossFade: true
+                },
+            });
+        });
+
+        // FETCH DATA
+        function fetchData() {
+            const timestamp = Date.now();
+            const finalUrl = PROXY_URL + encodeURIComponent(SHEET_CSV_URL + '&t=' + timestamp);
+
+            console.log('Fetching:', finalUrl);
+
+            Papa.parse(finalUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: function (header) {
+                    return header.trim();
+                },
+                complete: (results) => {
+                    if (results.data && results.data.length > 0) {
+                        processData(results.data);
+                    } else {
+                        showError('Dữ liệu trống.');
+                    }
+                },
+                error: (err) => {
+                    console.error('CSV Error:', err);
+                    showError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+                }
+            });
+        }
+
+        function processData(data) {
+            try {
+                allLocations = data.filter(row => {
+                    const status = row['Trạng Thái'] ? row['Trạng Thái'].toString().trim().toLowerCase() : '';
+                    return status === 'duyệt';
+                }).map((row, index) => {
+                    // Handle potential column name variations
+                    const imgRaw = row['Link Hình Ảnh'] || row['Hình Ảnh'] || row['Link Ảnh'] || '';
+
+                    // Parse multiple images (comma separated)
+                    let imgList = imgRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                    let processedImages = imgList.map(link => convertGoogleDriveLink(link));
+
+                    if (processedImages.length === 0) {
+                        processedImages = ['https://placehold.co/600x400/f1f5f9/94a3b8?text=ViVuTraVinh'];
+                    }
+
+                    return {
+                        id: index,
+                        timestamp: row['Dấu thời gian'],
+                        name: row['Tên địa điểm'] || 'Chưa đặt tên',
+                        category: row['Phân loại'] || 'Khác',
+                        area: row['Khu vực'] || 'Chưa rõ',
+                        mapLink: row['Link Google Maps'] || '#',
+                        priceRaw: row['Mức Giá'] || '0',
+                        priceFormatted: formatPrice(row['Mức Giá']),
+                        imageLink: processedImages[0], // Main image for card
+                        images: processedImages,       // All images for gallery
+                        description: row['Mô Tả'] || 'Chưa có mô tả.',
+                        contributor: row['Người Đóng Góp'] || 'Ẩn danh',
+                        rating: parseInt(row['Đánh Giá']) || 5 // Default 5 stars
+                    };
+                });
+
+                populateDropdowns();
+                renderHomepage();
+                loadingState.classList.add('hidden');
+                homeView.classList.remove('hidden');
+
+            } catch (e) {
+                console.error('Process Error:', e);
+                showError('Lỗi xử lý dữ liệu.');
+            }
+        }
+
+        // RENDER HOMEPAGE SECTIONS
+        function renderHomepage() {
+            // Filter data for sections
+            const foodItems = allLocations.filter(i => ['Quán ăn', 'Quán nhậu', 'Ăn vặt'].includes(i.category));
+            const cafeItems = allLocations.filter(i => i.category === 'Cafe');
+            const travelItems = allLocations.filter(i => i.category === 'Điểm du lịch');
+            const serviceItems = allLocations.filter(i => i.category === 'Dịch vụ');
+
+            renderSection('grid-food', foodItems.slice(0, 4));
+            renderSection('grid-cafe', cafeItems.slice(0, 4));
+            renderSection('grid-travel', travelItems.slice(0, 4));
+            renderSection('grid-service', serviceItems.slice(0, 4));
+        }
+
+        function renderSection(containerId, items) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 italic col-span-full text-center py-4">Chưa có địa điểm nào.</p>';
+                return;
+            }
+
+            items.forEach(item => {
+                container.appendChild(createCard(item));
+            });
+        }
+
+        // CREATE CARD HTML
+        function createCard(item) {
+            const isFav = favorites.includes(item.id);
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full card-hover transition-all duration-300 animate-fade-in-up group';
+
+            // Placeholder for error handling
+            const placeholder = 'https://placehold.co/600x400/f1f5f9/94a3b8?text=ViVuTraVinh';
+
+            card.innerHTML = `
+                <div class="relative h-48 overflow-hidden cursor-pointer">
+                    <img src="${item.imageLink}" alt="${item.name}" loading="lazy" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                         onerror="this.onerror=null; this.src='${placeholder}';"
+                         onclick="openModal(${item.id})">
+                    
+                    <button onclick="toggleFavorite(event, ${item.id})" 
+                            class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-md transition-colors ${isFav ? 'text-red-500' : 'text-slate-400 hover:text-red-500'}">
+                        <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                    </button>
+
+                    <div class="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent">
+                        <div class="flex items-center gap-1 text-yellow-400 text-xs">
+                            ${renderStars(item.rating)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4 flex-grow flex flex-col">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-1 rounded-md border border-brand-100">
+                            ${item.category}
+                        </span>
+                        <span class="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
+                            ${item.priceFormatted}
+                        </span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-800 mb-1 line-clamp-2 hover:text-brand-600 transition-colors cursor-pointer" onclick="openModal(${item.id})">
+                        ${item.name}
+                    </h3>
+                    
+                    <div class="flex items-center gap-1 text-xs text-slate-500 mb-3">
+                        <i class="fa-solid fa-location-dot text-slate-400"></i>
+                        <span>${item.area}</span>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // SEARCH & LIST LOGIC
+        function handleSearch() {
+            const term = searchInput.value.toLowerCase().trim();
+            const cat = categoryFilter.value;
+            const area = areaFilter.value;
+
+            // If filters are empty, show Home View
+            if (!term && !cat && !area) {
+                resetToHome();
+                return;
+            }
+
+            // Otherwise show List View
+            homeView.classList.add('hidden');
+            listView.classList.remove('hidden');
+            document.getElementById('listViewTitle').textContent = 'Kết quả tìm kiếm';
+
+            const filtered = allLocations.filter(item => {
+                const matchSearch = item.name.toLowerCase().includes(term) || item.description.toLowerCase().includes(term);
+                const matchCat = cat === '' || item.category === cat;
+                const matchArea = area === '' || item.area === area;
+                return matchSearch && matchCat && matchArea;
+            });
+
+            renderFullList(filtered);
+        }
+
+        function showFullList(type) {
+            homeView.classList.add('hidden');
+            listView.classList.remove('hidden');
+
+            let filtered = [];
+            let title = '';
+
+            if (type === 'food') {
+                filtered = allLocations.filter(i => ['Quán ăn', 'Quán nhậu', 'Ăn vặt'].includes(i.category));
+                title = '😋 Ăn Uống No Say';
+            } else if (type === 'cafe') {
+                filtered = allLocations.filter(i => i.category === 'Cafe');
+                title = '☕ Cà Phê & Tám Chuyện';
+            } else if (type === 'travel') {
+                filtered = allLocations.filter(i => i.category === 'Điểm du lịch');
+                title = '📸 Vi Vu Du Lịch';
+            } else if (type === 'service') {
+                filtered = allLocations.filter(i => i.category === 'Dịch vụ');
+                title = '🛠️ Dịch Vụ Tiện Ích';
+            }
+
+            document.getElementById('listViewTitle').textContent = title;
+            renderFullList(filtered);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderFullList(items) {
+            listGrid.innerHTML = '';
+            if (items.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                items.forEach(item => {
+                    listGrid.appendChild(createCard(item));
+                });
+            }
+        }
+
+        function resetToHome() {
+            searchInput.value = '';
+            categoryFilter.value = '';
+            areaFilter.value = '';
+
+            listView.classList.add('hidden');
+            homeView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // HELPERS
+        function formatPrice(price) {
+            if (!price) return 'Liên hệ';
+            // Remove non-digits
+            const num = price.toString().replace(/\D/g, '');
+            if (!num) return price;
+            return parseInt(num).toLocaleString('vi-VN') + 'đ';
+        }
+
+        function renderStars(count) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= count) {
+                    html += '<i class="fa-solid fa-star"></i>';
+                } else {
+                    html += '<i class="fa-regular fa-star text-white/50"></i>';
+                }
+            }
+            return html;
+        }
+
+        function convertGoogleDriveLink(url) {
+            if (!url) return 'https://placehold.co/600x400/f1f5f9/94a3b8?text=ViVuTraVinh';
+
+            // Handle standard Drive URLs
+            const idRegex = /[-\w]{25,}/;
+            const match = url.match(idRegex);
+
+            if (match && match[0]) {
+                return `https://lh3.googleusercontent.com/d/${match[0]}`;
+            }
+            return url;
+        }
+
+        function toggleFavorite(e, id) {
+            e.stopPropagation(); // Prevent card click
+            const btn = e.currentTarget;
+            const icon = btn.querySelector('i');
+
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(fid => fid !== id);
+                icon.classList.remove('fa-solid', 'text-red-500');
+                icon.classList.add('fa-regular', 'text-slate-400');
+                btn.classList.remove('text-red-500');
+            } else {
+                favorites.push(id);
+                icon.classList.remove('fa-regular', 'text-slate-400');
+                icon.classList.add('fa-solid', 'text-red-500');
+                btn.classList.add('text-red-500');
+            }
+            localStorage.setItem('vivu_favorites', JSON.stringify(favorites));
+        }
+
+        function populateDropdowns() {
+            const categories = [...new Set(allLocations.map(item => item.category))].sort();
+            const areas = [...new Set(allLocations.map(item => item.area))].sort();
+
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categoryFilter.appendChild(option);
+            });
+
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = area;
+                areaFilter.appendChild(option);
+            });
+        }
+
+        function showError(msg) {
+            loadingState.classList.add('hidden');
+            errorState.classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = msg;
+        }
+
+        // MODAL
+        const detailModal = document.getElementById('detailModal');
+        window.openModal = function (id) {
+            const item = allLocations.find(i => i.id === id);
+            if (!item) return;
+
+            // Main Image
+            const mainImg = document.getElementById('modalImage');
+            mainImg.src = item.imageLink;
+
+            // Gallery Logic
+            const galleryContainer = document.getElementById('modalGallery');
+            galleryContainer.innerHTML = '';
+
+            if (item.images && item.images.length > 1) {
+                galleryContainer.classList.remove('hidden');
+                item.images.forEach((imgUrl, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgUrl;
+                    thumb.className = `w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition-all flex-shrink-0 ${index === 0 ? 'border-brand-500 ring-2 ring-brand-100' : 'border-transparent hover:border-brand-300'}`;
+                    thumb.onclick = () => {
+                        mainImg.src = imgUrl;
+                        // Update active state
+                        Array.from(galleryContainer.children).forEach(c => {
+                            c.classList.remove('border-brand-500', 'ring-2', 'ring-brand-100');
+                            c.classList.add('border-transparent');
+                        });
+                        thumb.classList.remove('border-transparent');
+                        thumb.classList.add('border-brand-500', 'ring-2', 'ring-brand-100');
+                    };
+                    galleryContainer.appendChild(thumb);
+                });
+            } else {
+                galleryContainer.classList.add('hidden');
+            }
+
+            document.getElementById('modalTitle').textContent = item.name;
+            document.getElementById('modalCategory').textContent = item.category;
+            document.getElementById('modalArea').textContent = item.area;
+            document.getElementById('modalPrice').textContent = item.priceFormatted;
+            document.getElementById('modalTime').textContent = item.timestamp;
+            document.getElementById('modalDescription').textContent = item.description;
+            document.getElementById('modalMapLink').href = item.mapLink;
+
+            // Render stars in modal (yellow text)
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHtml += i <= item.rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star text-slate-300"></i>';
+            }
+            document.getElementById('modalStars').innerHTML = starsHtml;
+
+            detailModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeModal = function () {
+            detailModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    </script>
+</body>
+
+</html>
